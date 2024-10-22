@@ -1,11 +1,11 @@
 {
-  "name": "exercise-1",
+  "name": "excercise-1",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
     "dev": "nodemon index.js",
-    "start": "node inex.js"
+    "start": "node index.js"
   },
   "author": "Alan Burić",
   "license": "ISC",
