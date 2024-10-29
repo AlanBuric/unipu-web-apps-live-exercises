@@ -1,117 +1,90 @@
-const express = require("express");
-const { StatusCodes } = require("http-status-codes");
-const path = require("path");
+import express, { json, urlencoded } from "express";
+import { StatusCodes } from "http-status-codes";
+import RequestError from "./util/RequestError.js";
+import PizzaService from "./service/pizza.js";
+import OrderService from "./service/order.js";
 
 const port = 3000;
-const app = express().use(express.json());
+const app = express()
+  .use(json())
+  .use(urlencoded({ extended: true }));
 
-const pizze = [
-  {
-    id: 6,
-    naziv: "Margerita",
-    cijena: 9,
-  },
-  {
-    id: 101,
-    naziv: "Capricciosa",
-    cijena: 10,
-  },
-  {
-    id: 2,
-    naziv: "Slavonska",
-    cijena: 11,
-  },
-  {
-    id: 45,
-    naziv: "Fantazija",
-    cijena: 12,
-  },
-];
+app
+  .get("/pizza", (request, response) => response.send(PizzaService.getPizzas()))
+  .get("/pizza/:id", (request, response) =>
+    response.send(PizzaService.getPizzaById(request.params.id))
+  )
+  .get("/sizes", (request, response) =>
+    response.send(PizzaService.getPizzaSizes())
+  )
+  .post("/order", (request, response) => {
+    const userOrder = request.body;
+    console.log(userOrder);
 
-const orders = [];
-const velicine = ["mala", "srednja", "jumbo"];
+    if (!userOrder) {
+      throw new RequestError(StatusCodes.BAD_REQUEST, "Missing request body.");
+    } else if (
+      !userOrder.prezime ||
+      !userOrder.adresa ||
+      !userOrder.broj_telefona
+    ) {
+      throw new RequestError(
+        StatusCodes.BAD_REQUEST,
+        "Missing prezime, adresa or broj_telefona"
+      );
+    } else if (!userOrder.narudzba?.length) {
+      throw new RequestError(
+        StatusCodes.BAD_REQUEST,
+        (message = "Missing narudzba array")
+      );
+    }
 
-function getPizza(id) {
-  id = parseInt(id);
+    let pizzas = userOrder.narudzba
+      .map((narudzba) => {
+        if (!PizzaService.getPizzaSizes().includes(narudzba.velicina)) {
+          throw new RequestError(
+            StatusCodes.BAD_REQUEST,
+            `Unknown velicina "${
+              narudzba.velicina
+            }", available ones are: ${PizzaService.getPizzaSizes().join(", ")}`
+          );
+        }
 
-  if (isNaN(id) || id < 0) {
-    return StatusCodes.BAD_REQUEST;
-  }
+        return `${PizzaService.getPizzaById(narudzba.id).naziv} ${
+          narudzba.velicina
+        }`;
+      })
+      .join(", ");
+    let index = pizzas.lastIndexOf(",");
+    pizzas = pizzas.substring(0, index) + " i" + pizzas.substring(index + 1);
 
-  const pizza = pizze.find((pizza) => pizza.id == id);
-
-  if (pizza) {
-    return pizza;
-  }
-
-  return StatusCodes.NOT_FOUND;
-}
-
-app.get("/pizze", (req, res) => res.send(pizze));
-
-app.get("/pizze/:id", (req, res) => {
-  const result = getPizza(req.params.id);
-
-  if (typeof result === "number") {
-    return res.sendStatus(result);
-  }
-
-  res.send(result);
-});
-
-app.post("/naruci", (req, res) => {
-  const order = req.body;
-  console.log(req.body);
-
-  const notArray = !Array.isArray(order.narudzba) || !order.narudzba.length;
-  const invalid = order.narudzba.find((pizza) => {
-    const invalidCount = isNaN(pizza.kolicina) || parseInt(pizza.kolicina) <= 0;
-    const invalidPizza =
-      typeof getPizza(pizza.id) === "number" ||
-      !velicine.includes(pizza.velicina);
-    console.log(getPizza(pizza.id));
-
-    return invalidCount || invalidPizza;
-  });
-  console.log(invalid);
-  const invalidCredentials =
-    !order.prezime || !order.adresa || !order.broj_telefona;
-
-  if (notArray) {
-    return res
-      .status(StatusCodes.BAD_REQUEST)
-      .send({ error: "Missing narudzba" });
-  } else if (invalidCredentials) {
-    return res
-      .status(StatusCodes.BAD_REQUEST)
-      .send({ error: "Missing credentials" });
-  }
-  if (invalid) {
-    return res.status(StatusCodes.BAD_REQUEST).send({
-      error: "Invalid request body",
-    });
-  }
-
-  orders.push(order);
-
-  let pizze = order.narudzba
-    .map((narudzba) => `${getPizza(narudzba.id).naziv} ${narudzba.velicina}`)
-    .join(", ");
-    let index = pizze.lastIndexOf(",");
-    pizze = pizze.substring(0, index) + " i" + pizze.substring(index + 1);
-
-  const message = `Vaša narudžba za ${pizze} je uspješno zaprimljena!`;
-
-  res.status(StatusCodes.OK).send({
-    message,
-    prezime: order.prezime,
-    adresa: order.adresa,
-    ukupna_cijena: order.narudzba.reduce(
-      (acc, pizza) => acc + pizza.kolicina * getPizza(pizza.id).cijena,
+    const ukupna_cijena = userOrder.narudzba.reduce(
+      (acc, pizza) =>
+        acc + pizza.kolicina * PizzaService.getPizzaById(pizza.id).cijena,
       0
-    ),
+    );
+
+    const order = {
+      prezime: userOrder.prezime,
+      adresa: userOrder.adresa,
+      ukupna_cijena,
+    };
+
+    OrderService.addOrder(order);
+
+    response.status(StatusCodes.OK).send({
+      message: `Vaša narudžba za ${pizzas} je uspješno zaprimljena!`,
+      ...order,
+    });
+  })
+  .use((error, request, response, next) => {
+    if (error instanceof RequestError) {
+      return response.status(error.statusCode).send({ error: error.message });
+    }
+
+    console.error("An error was caught by the error handler:", error);
+    response.sendStatus(StatusCodes.INTERNAL_SERVER_ERROR);
   });
-});
 
 app.listen(port, () =>
   console.log(`Express server is up and running on http://localhost:${port}`)
