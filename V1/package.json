@@ -8,7 +8,7 @@
     "start": "node index.js"
   },
   "author": "Alan Burić",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "express": "^4.21.1"
   },

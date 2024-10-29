@@ -1,7 +1,8 @@
 import { StatusCodes } from "http-status-codes";
 import RequestError from "../util/RequestError.js";
+import { Pizza } from "../types/types.js";
 
-const pizzaRegistry = {
+const pizzaRegistry: Record<string, Pizza> = {
   6: {
     naziv: "Margerita",
     cijena: 9,
@@ -20,10 +21,8 @@ const pizzaRegistry = {
   },
 };
 
-const pizzaSizes = ["mala", "srednja", "jumbo"];
-
 export default class PizzaService {
-  static getPizzaById(id) {
+  static getPizzaById(id: string) {
     const pizza = pizzaRegistry[id];
 
     if (pizza) {
@@ -41,9 +40,5 @@ export default class PizzaService {
       id,
       ...pizza,
     }));
-  }
-
-  static getPizzaSizes() {
-    return pizzaSizes;
   }
 }
