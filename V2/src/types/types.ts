@@ -1,4 +1,4 @@
-import { UserPizzaOrder } from "./data-transfer-objects";
+import { UserPizzaOrder } from "./data-transfer-objects.js";
 
 export type Pizza = {
   naziv: string;

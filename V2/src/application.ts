@@ -6,10 +6,9 @@ import OrderService from "./service/order.js";
 import { PIZZA_SIZES, PizzaOrder } from "./types/types.js";
 import { UserPizzaOrder } from "./types/data-transfer-objects.js";
 
-const port = 3000;
-const app = express().use(json());
+const application = express().use(json());
 
-app
+application
   .get("/pizza", (request: Request, response: Response): any =>
     response.send(PizzaService.getPizzas())
   )
@@ -21,7 +20,6 @@ app
   )
   .post("/order", (request: Request, response: Response) => {
     const userOrder = request.body as UserPizzaOrder;
-    console.log(userOrder);
 
     if (!userOrder) {
       throw new RequestError(StatusCodes.BAD_REQUEST, "Missing request body.");
@@ -32,7 +30,7 @@ app
     ) {
       throw new RequestError(
         StatusCodes.BAD_REQUEST,
-        "Missing prezime, adresa or broj_telefona"
+        "Missing prezime, adresa or broj_telefona."
       );
     } else if (!userOrder.narudzba?.length) {
       throw new RequestError(StatusCodes.BAD_REQUEST, "Missing narudzba array");
@@ -65,7 +63,7 @@ app
 
     OrderService.addOrder(order);
 
-    response.status(StatusCodes.OK).send({
+    response.status(StatusCodes.CREATED).send({
       ...order,
       message: `Vaša narudžba za ${pizzas} je uspješno zaprimljena!`,
     });
@@ -86,6 +84,4 @@ app
     }
   );
 
-app.listen(port, () =>
-  console.log(`Express server is up and running on http://localhost:${port}`)
-);
+export default application;

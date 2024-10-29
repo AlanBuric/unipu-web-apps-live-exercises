@@ -4,7 +4,7 @@ import { Pizza } from "../types/types.js";
 
 const pizzaRegistry: Record<string, Pizza> = {
   6: {
-    naziv: "Margerita",
+    naziv: "Margherita",
     cijena: 9,
   },
   101: {

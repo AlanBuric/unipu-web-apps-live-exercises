@@ -1,4 +1,4 @@
-import { PizzaSize } from "./types";
+import { PizzaSize } from "./types.js";
 
 export type PizzaOrderEntry = {
   id: string;
@@ -11,4 +11,9 @@ export type UserPizzaOrder = {
   prezime: string;
   adresa: string;
   broj_telefona: string;
+};
+
+export type PizzaOrderResponse = UserPizzaOrder & {
+  ukupna_cijena: number;
+  message: string;
 };

@@ -1,4 +1,4 @@
-import { PizzaOrder } from "../types/types";
+import { PizzaOrder } from "../types/types.js";
 
 const orders: PizzaOrder[] = [];
 
