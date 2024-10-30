@@ -14,7 +14,10 @@ function loadDatabase() {
 }
 
 function saveDatabase() {
-  return fileSystem.promises.writeFile(databaseFile, JSON.stringify(database));
+  return fileSystem.promises.writeFile(
+    databaseFile,
+    JSON.stringify(database, null, 2)
+  );
 }
 
 function addNewUser(user) {
@@ -22,12 +25,36 @@ function addNewUser(user) {
   return saveDatabase();
 }
 
+function getUserById(id) {
+  return database.korisnici.find((korisnik) => korisnik.id == request.body.id);
+}
+
+// Primjer: GET http://localhost:3000/korisnici?ime=A&prezime=i
+function buildFilterFunction(query) {
+  const filters = [];
+
+  if (query.ime) {
+    filters.push((user) => user.ime.includes(query.ime));
+  }
+
+  if (query.prezime) {
+    filters.push((user) => user.prezime.includes(query.prezime));
+  }
+
+  return (user) => filters.every((filter) => filter(user));
+}
+
 const userAttributes = ["id", "ime", "prezime"];
 
 const app = express()
   .use(json())
   .get("/", (request, response) => response.send("Pozdrav, Alan Burić!"))
-  .get("/korisnici", (request, response) => response.send(database.korisnici))
+  .get("/korisnici", (request, response) => {
+    const filterFunction = buildFilterFunction(request.query);
+    const filteredUsers = database.korisnici.filter(filterFunction);
+
+    response.send(filteredUsers);
+  })
   .post("/korisnici", async (request, response) => {
     const invalidAttribute = userAttributes.find(
       (attribute) => typeof request.body[attribute] !== "string"
@@ -37,9 +64,7 @@ const app = express()
       return response
         .status(400)
         .send(`Greška! Nedostaje atribut ${invalidAttribute}`);
-    } else if (
-      database.korisnici.find((korisnik) => korisnik.id == request.body.id)
-    ) {
+    } else if (getUserById(request.body.id)) {
       return response.status(400);
     }
 
@@ -50,6 +75,18 @@ const app = express()
     });
 
     response.sendStatus(200);
+  })
+  .get("/korisnici/:id", (request, response) => {
+    const user = getUserById(request.params.id);
+
+    if (user) {
+      return response.send({
+        ...user,
+        message: `Uspješno dohvaćen korisnik s ID-em ${request.params.id}`,
+      });
+    }
+
+    response.sendStatus(404);
   });
 
 const port = 3000;
