@@ -1,6 +1,9 @@
 import express, { json } from "express";
 import fileSystem from "fs";
 import path from "path";
+import { config } from "dotenv";
+
+config();
 
 const databaseFile = path.resolve("./database/data.json");
 var database = {};
@@ -21,12 +24,12 @@ function saveDatabase() {
 }
 
 function addNewUser(user) {
-  database.korisnici.push(user);
+  database.korisnici.push({ ...user, id: database.nextUserId++ });
   return saveDatabase();
 }
 
 function getUserById(id) {
-  return database.korisnici.find((korisnik) => korisnik.id == request.body.id);
+  return database.korisnici.find((korisnik) => korisnik.id == id);
 }
 
 // Primjer: GET http://localhost:3000/korisnici?ime=A&prezime=i
@@ -44,7 +47,7 @@ function buildFilterFunction(query) {
   return (user) => filters.every((filter) => filter(user));
 }
 
-const userAttributes = ["id", "ime", "prezime"];
+const userAttributes = ["ime", "prezime"];
 
 const app = express()
   .use(json())
@@ -69,7 +72,6 @@ const app = express()
     }
 
     await addNewUser({
-      id: request.body.id,
       ime: request.body.ime,
       prezime: request.body.prezime,
     });
@@ -87,6 +89,13 @@ const app = express()
     }
 
     response.sendStatus(404);
+  })
+  .get("/protected", (request, response) => {
+    if (request.query.api_key == process.env.API_KEY) {
+      return response.send("Super secret protected content!!!");
+    }
+
+    response.status(403).send("Pristup nije dozvoljen.");
   });
 
 const port = 3000;
