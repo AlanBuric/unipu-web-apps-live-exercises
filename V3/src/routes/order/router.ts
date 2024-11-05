@@ -1,0 +1,48 @@
+import { Router, Request, Response } from "express";
+import { body, matchedData } from "express-validator";
+import { StatusCodes } from "http-status-codes";
+import { UserPizzaOrder } from "../../types/data-transfer-objects.js";
+import { PizzaOrder, PIZZA_SIZES } from "../../types/types.js";
+import PizzaService from "../pizza/service.js";
+import OrderService from "./service.js";
+
+const orderRouter = Router().post(
+  "/order",
+  body(["prezime", "adresa", "broj_telefona"])
+    .isString()
+    .withMessage((value, meta) => `Missing string ${meta.path}`),
+  body("narudzba").isArray().withMessage("Missing narudzba array"),
+  body("narudzba.*.velicina")
+    .isIn(PIZZA_SIZES)
+    .withMessage(
+      `Unknown velicina, availabe ones are: ${PIZZA_SIZES.join(", ")}`
+    ),
+  (request: Request, response: Response) => {
+    const userOrder = matchedData<UserPizzaOrder>(request);
+
+    let pizzas = userOrder.narudzba
+      .map((order) => {
+        return `${PizzaService.getPizzaById(order.id).naziv} ${order.velicina}`;
+      })
+      .join(", ");
+    let index = pizzas.lastIndexOf(",");
+    pizzas = pizzas.substring(0, index) + " i" + pizzas.substring(index + 1);
+
+    const ukupna_cijena = userOrder.narudzba.reduce(
+      (acc: number, pizza) =>
+        acc + pizza.kolicina * PizzaService.getPizzaById(pizza.id).cijena,
+      0
+    );
+
+    const order: PizzaOrder = { ...userOrder, ukupna_cijena };
+
+    OrderService.addOrder(order);
+
+    response.status(StatusCodes.CREATED).send({
+      ...order,
+      message: `Vaša narudžba za ${pizzas} je uspješno zaprimljena!`,
+    });
+  }
+);
+
+export default orderRouter;
