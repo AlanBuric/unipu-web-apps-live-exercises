@@ -1,3 +1,4 @@
+import { UUID } from "crypto";
 import { UserPizzaOrder } from "./data-transfer-objects.js";
 
 export type Pizza = {
@@ -11,4 +12,5 @@ export type PizzaSize = (typeof PIZZA_SIZES)[number];
 
 export type PizzaOrder = UserPizzaOrder & {
   ukupna_cijena: number;
+  id: UUID
 };
