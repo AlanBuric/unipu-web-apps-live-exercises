@@ -1,11 +1,16 @@
 {
-    "extends": "./tsconfig.json",
-    "include": [
-        "test/**/*"
-    ],
-    "exclude": [
-        "node_modules",
-        "dist",
-        "src"
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "types": [
+      "vitest/globals"
     ]
+  },
+  "include": [
+    "test/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "src"
+  ]
 }

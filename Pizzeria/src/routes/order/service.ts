@@ -1,32 +1,45 @@
-import { randomUUID, UUID } from "crypto";
-import { StatusCodes } from "http-status-codes";
-import { PizzaOrder } from "../../types/types.js";
+import {randomUUID, UUID} from "crypto";
+import {StatusCodes} from "http-status-codes";
+import {PizzaOrder} from "../../types/types.js";
 import RequestError from "../../util/RequestError.js";
+import {UserPizzaOrder} from "../../types/data-transfer-objects.js";
+import PizzaService from "../pizza/service.js";
 
 const orders: Record<UUID, PizzaOrder> = {};
 
 export default class OrderService {
-  static addOrder(order: PizzaOrder): UUID {
-    const id = randomUUID();
-    orders[id] = order;
-    return id;
-  }
+    static addOrder(userOrder: UserPizzaOrder): UUID {
+        const id = randomUUID();
 
-  public static getOrderById(id: UUID): PizzaOrder {
-    const order = orders[id];
+        const ukupna_cijena = userOrder.narudzba.reduce(
+            (acc: number, pizza) =>
+                acc + pizza.kolicina * PizzaService.getPizzaById(pizza.id).cijena,
+            0
+        );
 
-    if (!order) {
-      throw new RequestError(StatusCodes.NOT_FOUND, `Ne postoji narudžba s ID-jem ${id}`);
+        orders[id] = {
+            ...userOrder,
+            ukupna_cijena
+        };
+
+        return id;
     }
 
-    return order;
-  }
+    public static getOrderById(id: UUID): PizzaOrder {
+        const order = orders[id];
 
-  public static deleteOrderById(id: UUID) {
-    if (!delete orders[id]) {
-      throw new RequestError(StatusCodes.NOT_FOUND, `Narudžba s ID-jem ${id} ne postoji`);
+        if (!order) {
+            throw new RequestError(StatusCodes.NOT_FOUND, `Ne postoji narudžba s ID-jem ${id}`);
+        }
+
+        return order;
     }
 
-    return true;
-  }
+    public static deleteOrderById(id: UUID) {
+        if (!delete orders[id]) {
+            throw new RequestError(StatusCodes.NOT_FOUND, `Narudžba s ID-jem ${id} ne postoji`);
+        }
+
+        return true;
+    }
 }

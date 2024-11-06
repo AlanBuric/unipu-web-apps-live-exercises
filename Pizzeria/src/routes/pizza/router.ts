@@ -10,17 +10,17 @@ const PizzaRouter = Router()
     .use("/:id",
         param("id").isInt({min: 0}).withMessage("Nepravilan ID pizze"),
         handleValidationResult,
-        Router()
+        Router({mergeParams: true})
             .get("", (request: Request, response: Response): any =>
-                response.send(PizzaService.getPizzaById(request.params.id)))
+                response.send(PizzaService.getPizzaById(matchedData(request).id)))
             .patch(
                 "",
                 body("naziv").optional().isString(),
                 body("cijena").optional().isFloat({min: 0}),
                 handleValidationResult,
                 (request: Request, response: Response): any => {
-                    const pizza = PizzaService.getPizzaById(request.params.id);
-                    const data = matchedData(request);
+                    const {id, ...data} = matchedData(request);
+                    const pizza = PizzaService.getPizzaById(id);
 
                     Object.assign(pizza, data);
 
