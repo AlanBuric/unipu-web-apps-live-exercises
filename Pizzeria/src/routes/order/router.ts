@@ -7,7 +7,7 @@ import { PizzaOrder, PIZZA_SIZES } from "../../types/types.js";
 import PizzaService from "../pizza/service.js";
 import OrderService from "./service.js";
 
-const orderRouter = Router()
+const OrderRouter = Router()
   .post(
     "",
     body(["prezime", "adresa", "broj_telefona"])
@@ -67,4 +67,4 @@ const orderRouter = Router()
     }
   );
 
-export default orderRouter;
+export default OrderRouter;

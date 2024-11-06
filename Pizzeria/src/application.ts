@@ -1,13 +1,13 @@
 import express, { json, NextFunction, Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
-import orderRouter from "./routes/order/router.js";
-import pizzaRouter from "./routes/pizza/router.js";
+import OrderRouter from "./routes/order/router.js";
+import PizzaRouter from "./routes/pizza/router.js";
 import RequestError from "./util/RequestError.js";
 
 const application = express()
   .use(json())
-  .use("/pizza", pizzaRouter)
-  .use("/order", orderRouter)
+  .use("/pizza", PizzaRouter)
+  .use("/order", OrderRouter)
   .use(
     (
       error: any,
@@ -19,7 +19,7 @@ const application = express()
         return response.status(error.statusCode).send({ error: error.message });
       }
 
-      console.error("An error was caught by the error handler:", error);
+      console.error("An error was caught in the Express routes:", error);
       response.sendStatus(StatusCodes.INTERNAL_SERVER_ERROR);
     }
   );
