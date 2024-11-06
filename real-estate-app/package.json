@@ -1,0 +1,31 @@
+{
+  "name": "real-estate-app",
+  "version": "1.0.0",
+  "description": "Samostalni zadatak za Vježbu 2",
+  "type": "module",
+  "main": "dist/server.js",
+  "scripts": {
+    "dev": "tsx watch src/server.ts --clear-screen=false",
+    "build": "rimraf dist && tsc --project tsconfig.json",
+    "start": "node dist/server.js",
+    "test:dev": "vitest",
+    "test:prod": "vitest run"
+  },
+  "author": "Alan Burić",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^5.0.1",
+    "express-validator": "^7.2.0",
+    "http-status-codes": "^2.3.0",
+    "rimraf": "^6.0.1"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.9.0",
+    "@types/supertest": "^6.0.2",
+    "supertest": "^7.0.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.6.3",
+    "vitest": "^2.1.4"
+  }
+}
