@@ -1,7 +1,7 @@
 {
-  "name": "v2",
+  "name": "pizzeria",
   "version": "1.0.0",
-  "description": "",
+  "description": "Vježbe 2 i 3 te samostalni zadatak za vježbu 1",
   "type": "module",
   "main": "dist/server.js",
   "scripts": {
