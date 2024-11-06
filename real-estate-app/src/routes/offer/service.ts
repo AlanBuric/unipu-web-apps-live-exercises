@@ -5,7 +5,7 @@ import {StatusCodes} from "http-status-codes";
 import {randomUUID} from "node:crypto";
 import {WithUUID} from "../../types/data-transfer-objects.js";
 
-const offers: Record<UUID, Offer> = {}
+let offers: Record<UUID, Offer> = {}
 
 export default class OfferService {
     public static getAllOffers(): (Offer & WithUUID)[] {
@@ -40,5 +40,13 @@ export default class OfferService {
 
     public static updateOfferById(id: UUID, offer: Partial<Offer>): Offer {
         return Object.assign(this.getOfferById(id), offer);
+    }
+
+    public static resetMock() {
+        if (process.env.NODE_ENV !== "test") {
+            throw new Error("Reset mock can be called only during tests");
+        }
+
+        offers = {};
     }
 }

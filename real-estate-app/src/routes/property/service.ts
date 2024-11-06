@@ -5,7 +5,7 @@ import {StatusCodes} from 'http-status-codes';
 import {randomUUID} from 'node:crypto';
 import {WithUUID} from '../../types/data-transfer-objects.js';
 
-const properties: Record<UUID, Property> = {};
+let properties: Record<UUID, Property> = {};
 
 export default class PropertyService {
     public static getAllProperties(): (Property & WithUUID)[] {
@@ -42,5 +42,13 @@ export default class PropertyService {
         const existingProperty = this.getPropertyById(id);
 
         return Object.assign(existingProperty, property);
+    }
+
+    public static resetMock() {
+        if (process.env.NODE_ENV !== "test") {
+            throw new Error("Reset mock can be called only during tests");
+        }
+
+        properties = {};
     }
 }
