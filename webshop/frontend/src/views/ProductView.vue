@@ -1,11 +1,23 @@
 <script setup lang="ts">
-import TheWelcome from '../components/TheWelcome.vue'
+import Product from "@/components/Product.vue";
+import { onMounted, ref } from "vue";
 
-const products = await fetch("http://localhost:3000/proizvod");
+const products = ref<{
+  id: string,
+  naziv: string;
+  cijena: number;
+  velicine: string[];
+}[]>([]);
+
+onMounted(async () => {
+  products.value = await fetch("http://localhost:3000/proizvod")
+    .then(response => response.ok ? response.json() : null)
+    .catch(() => null);
+});
 </script>
 
 <template>
   <main>
-    <Product v-for="product in products" product="product"/>
+    <Product v-if="products" v-for="product in products" :proizvod="product" />
   </main>
 </template>
