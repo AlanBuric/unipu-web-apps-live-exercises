@@ -1,0 +1,37 @@
+{
+  "name": "webshop",
+  "version": "1.0.0",
+  "description": "Vježbe 4",
+  "main": "dist/src/server.js",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "start": "tsx src/server.ts",
+    "test": "test:dev"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AlanBuric/unipu-web-apps-live-exercises.git"
+  },
+  "author": "Alan Burić",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/AlanBuric/unipu-web-apps-live-exercises/issues"
+  },
+  "homepage": "https://github.com/AlanBuric/unipu-web-apps-live-exercises#readme",
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "express": "^5.0.1",
+    "express-validator": "^7.2.0",
+    "http-status-codes": "^2.3.0",
+    "rimraf": "^6.0.1"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.9.0",
+    "@types/supertest": "^6.0.2",
+    "supertest": "^7.0.0",
+    "tsx": "^4.19.2",
+    "vitest": "^2.1.4"
+  }
+}
