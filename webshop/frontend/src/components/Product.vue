@@ -122,7 +122,7 @@ const props = defineProps<{
                                         </span>
                   </label>
                   <!-- Active: "ring-2 ring-indigo-500" -->
-                  <label v-for="velicina in proizvod.velicine"
+                  <label v-for="velicina in proizvod.velicine" :key="velicina"
                          class="group relative flex cursor-pointer items-center justify-center rounded-md border bg-white px-4 py-3 text-sm font-medium uppercase text-gray-900 shadow-sm hover:bg-gray-50 focus:outline-none sm:flex-1 sm:py-6">
                     <input type="radio" name="size-choice" :value="velicina" class="sr-only" />
                     <span>{{ velicina }}</span>
