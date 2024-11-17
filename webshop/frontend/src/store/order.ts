@@ -8,12 +8,7 @@ export const useOrderStore = defineStore("orders", () => {
   watch(shoppingCart, saveShoppingCart, { deep: true });
 
   function loadShoppingCart() {
-    if (!shoppingCart.length) {
-      Object.assign(shoppingCart, JSON.parse(localStorage.getItem("shoppingCart") ?? "[]"));
-      return true;
-    }
-
-    return false;
+    Object.assign(shoppingCart, JSON.parse(localStorage.getItem("shoppingCart") ?? "[]"));
   }
 
   function saveShoppingCart() {
