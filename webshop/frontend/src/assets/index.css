@@ -6,6 +6,10 @@ html, body, #app {
     height: 100%;
 }
 
+html {
+    @apply bg-gray-100
+}
+
 img {
     pointer-events: none;
     user-select: none;
