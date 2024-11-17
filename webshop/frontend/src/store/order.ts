@@ -1,9 +1,11 @@
 import { defineStore } from "pinia";
-import { reactive } from "vue";
+import { reactive, watch } from "vue";
 import type { OrderItem } from "@shared-types/database-types";
 
 export const useOrderStore = defineStore("orders", () => {
   const shoppingCart = reactive<OrderItem[]>([]);
+
+  watch(shoppingCart, saveShoppingCart, { deep: true });
 
   function loadShoppingCart() {
     if (!shoppingCart.length) {
@@ -35,14 +37,10 @@ export const useOrderStore = defineStore("orders", () => {
 
     if (existingItem > -1) {
       shoppingCart[existingItem].amount += newOrderItem.amount;
-      saveShoppingCart();
-
       return false;
     }
 
     shoppingCart.push(newOrderItem);
-    saveShoppingCart();
-
     return true;
   }
 
@@ -56,19 +54,14 @@ export const useOrderStore = defineStore("orders", () => {
 
     if (!(existingItem > -1) || !(shoppingCart[existingItem].amount -= orderItem.amount)) {
       shoppingCart.splice(existingItem, 1);
-      saveShoppingCart();
-
       return true;
     }
-
-    saveShoppingCart();
 
     return false;
   }
 
   function clearShoppingCart() {
     shoppingCart.splice(0, shoppingCart.length);
-    saveShoppingCart();
   }
 
   return { shoppingCart, loadShoppingCart, findOrderItemIndex, addOrderItem, removeOrderItem, clearShoppingCart };
