@@ -11,6 +11,8 @@ const app = createApp(App)
 app.use(createPinia())
 app.use(router)
 
-useOrderStore().loadShoppingCart();
-
 app.mount('#app')
+
+export const appBroadcastChannel = new BroadcastChannel("example-webshop");
+
+appBroadcastChannel.onmessage = () => useOrderStore().loadShoppingCart();

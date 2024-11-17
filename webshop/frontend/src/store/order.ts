@@ -1,18 +1,39 @@
 import { defineStore } from "pinia";
-import { reactive, watch } from "vue";
+import { reactive, ref, watch } from "vue";
 import type { OrderItem } from "@shared-types/database-types";
+import { appBroadcastChannel } from "@/main";
+
+const shoppingCartLocalStorageName = "shopping-cart";
 
 export const useOrderStore = defineStore("orders", () => {
   const shoppingCart = reactive<OrderItem[]>([]);
+  const shoppingCartLoaded = ref<boolean>(false);
 
   watch(shoppingCart, saveShoppingCart, { deep: true });
 
+  loadShoppingCart();
+
   function loadShoppingCart() {
-    Object.assign(shoppingCart, JSON.parse(localStorage.getItem("shoppingCart") ?? "[]"));
+    shoppingCartLoaded.value = true;
+    const loadedData = localStorage.getItem(shoppingCartLocalStorageName);
+
+    if (shoppingCart.length) {
+      clearShoppingCart();
+    }
+
+    Object.assign(shoppingCart, JSON.parse(loadedData ?? "[]"));
   }
 
   function saveShoppingCart() {
-    localStorage.setItem("shoppingCart", JSON.stringify(shoppingCart));
+    if (shoppingCartLoaded.value) {
+      shoppingCartLoaded.value = false;
+      return false;
+    }
+
+    localStorage.setItem(shoppingCartLocalStorageName, JSON.stringify(shoppingCart));
+    appBroadcastChannel.postMessage("");
+
+    return true;
   }
 
   function findOrderItemIndex(newOrderItem: Omit<OrderItem, "amount">) {
