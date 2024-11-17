@@ -1,6 +1,7 @@
 {
-  "name": "webshop",
-  "version": "0.0.0",
+  "name": "webshop-frontend",
+  "version": "1.0.0",
+  "description": "Vježbe 4, Samostalni zadatak za vježbu 3",
   "private": true,
   "type": "module",
   "scripts": {

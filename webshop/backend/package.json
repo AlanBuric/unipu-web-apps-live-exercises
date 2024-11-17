@@ -1,12 +1,13 @@
 {
-  "name": "webshop",
+  "name": "webshop-backend",
   "version": "1.0.0",
-  "description": "Vježbe 4",
+  "description": "Vježbe 4, Samostalni zadatak za vježbu 3",
   "main": "dist/src/server.js",
   "type": "module",
   "scripts": {
     "dev": "tsx watch --clear-screen=false src/server.ts",
-    "start": "tsx src/server.ts",
+    "build": "rimraf dist && tsc --project tsconfig.json",
+    "start": "node dist/server.js",
     "test": "test:dev"
   },
   "repository": {

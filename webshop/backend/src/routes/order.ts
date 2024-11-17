@@ -1,11 +1,11 @@
-import { Router, Request, Response } from "express";
-import { Order } from "../types/database-types.js";
+import { Router, type Request, type Response } from "express";
+import type { Order } from "../types/database-types.js";
 import { StatusCodes } from "http-status-codes";
 import { body, matchedData, param } from "express-validator";
 import { getProduct } from "./product.js";
 import RequestError from "../util/RequestError.js";
 import processValidation from "../util/validation.js";
-import { OrderRequest } from "../types/data-transfer-objects.js";
+import type { OrderRequest } from "../types/data-transfer-objects.js";
 import AutoIncrementer from "../util/AutoIncrementer.js";
 
 const orders: Record<number, Order> = {};

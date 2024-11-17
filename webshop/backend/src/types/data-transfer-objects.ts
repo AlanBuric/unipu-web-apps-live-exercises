@@ -1,5 +1,5 @@
-import { Order, Product } from "./database-types.js";
-import { OptionalAndBoilerplateProductAttrs } from "../routes/product.js";
+import type { Order, Product } from "./database-types.js";
+import type { OptionalAndBoilerplateProductAttrs } from "../routes/product.js";
 
 export type WithID = {
   id: string | number;
