@@ -1,20 +1,20 @@
 <script setup lang="ts">
-import { RouterView } from "vue-router";
-import ShoppingCart from "@/components/icons/ShoppingCart.vue";
-import { useOrderStore } from "@/store/order";
-import type { OrderRequest } from "@shared-types/data-transfer-objects";
+  import { RouterView } from "vue-router";
+  import ShoppingCart from "@/components/icons/ShoppingCart.vue";
+  import { useOrderStore } from "@/store/order";
+  import type { OrderRequest } from "@shared-types/data-transfer-objects";
 
-const orderStore = useOrderStore();
+  const orderStore = useOrderStore();
 
-function sendOrder() {
-  const order: OrderRequest = { items: orderStore.shoppingCart };
+  function sendOrder() {
+    const order: OrderRequest = { items: orderStore.shoppingCart };
 
-  return fetch("http://localhost:3000/order", {
-    method: "POST",
-    body: JSON.stringify(order),
-    headers: { "Content-Type": "application/json" }
-  }).then((response) => response.ok && orderStore.clearShoppingCart());
-}
+    return fetch("http://localhost:3000/order", {
+      method: "POST",
+      body: JSON.stringify(order),
+      headers: { "Content-Type": "application/json" }
+    }).then((response) => response.ok && orderStore.clearShoppingCart());
+  }
 
 </script>
 
@@ -30,7 +30,8 @@ function sendOrder() {
       <span class="text-base">{{ orderStore.shoppingCart.reduce((acc, orderItem) => acc + orderItem.amount, 0)
         }} proizvoda</span>
       <button class="bg-indigo-600 px-2 py-1 rounded-md hover:bg-indigo-700" @click="sendOrder">Naruči</button>
-      <button class="bg-amber-400 px-2 py-1 rounded-md hover:bg-amber-500 text-gray-900" @click="useOrderStore().clearShoppingCart()">
+      <button class="bg-amber-400 px-2 py-1 rounded-md hover:bg-amber-500 text-gray-900"
+              @click="useOrderStore().clearShoppingCart()">
         Obriši
       </button>
     </div>

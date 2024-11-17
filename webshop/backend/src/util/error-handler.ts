@@ -1,4 +1,4 @@
-import type { Request, Response, NextFunction } from "express";
+import type { NextFunction, Request, Response } from "express";
 import RequestError from "./RequestError.js";
 import { StatusCodes } from "http-status-codes";
 
@@ -9,7 +9,7 @@ export default function errorHandler(
   next: NextFunction
 ): any {
   if (error instanceof RequestError) {
-    return response.status(error.statusCode).send({error: error.message});
+    return response.status(error.statusCode).send({ error: error.message });
   }
 
   console.error("An error was caught in the Express routes:", error);

@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import type { ProductPreview } from "@shared-types/data-transfer-objects";
+  import type { ProductPreview } from "@shared-types/data-transfer-objects";
 
-defineProps<{ product: ProductPreview }>();
+  defineProps<{ product: ProductPreview }>();
 </script>
 
 <template>

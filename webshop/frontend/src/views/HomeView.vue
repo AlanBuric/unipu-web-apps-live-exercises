@@ -1,16 +1,16 @@
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
-import type { ProductPreview } from "@shared-types/data-transfer-objects";
-import ProductCard from "@/components/ProductCard.vue";
-import LoadingAnimation from "@/components/LoadingAnimation.vue";
+  import { onMounted, ref } from "vue";
+  import type { ProductPreview } from "@shared-types/data-transfer-objects";
+  import ProductCard from "@/components/ProductCard.vue";
+  import LoadingAnimation from "@/components/LoadingAnimation.vue";
 
-const products = ref<ProductPreview[]>([]);
+  const products = ref<ProductPreview[]>([]);
 
-onMounted(async () => {
-  products.value = await fetch(`http://localhost:3000/product`)
-    .then(response => response.ok ? response.json() : [])
-    .catch(() => []);
-});
+  onMounted(async () => {
+    products.value = await fetch(`http://localhost:3000/product`)
+      .then(response => response.ok ? response.json() : [])
+      .catch(() => []);
+  });
 </script>
 
 <template>

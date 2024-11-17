@@ -1,4 +1,4 @@
-import { Router, type Request, type Response } from "express";
+import { type Request, type Response, Router } from "express";
 import type { Order } from "../types/database-types.js";
 import { StatusCodes } from "http-status-codes";
 import { body, matchedData, param } from "express-validator";

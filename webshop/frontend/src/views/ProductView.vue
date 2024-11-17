@@ -1,33 +1,38 @@
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
-import type { Product } from "@shared-types/database-types";
-import { useRoute } from "vue-router";
-import LoadingAnimation from "@/components/LoadingAnimation.vue";
-import { useOrderStore } from "@/store/order";
+  import { onMounted, ref } from "vue";
+  import type { Product } from "@shared-types/database-types";
+  import { useRoute } from "vue-router";
+  import LoadingAnimation from "@/components/LoadingAnimation.vue";
+  import { useOrderStore } from "@/store/order";
 
-const productId = useRoute().params.productId as string;
-const product = ref<Product>();
+  const productId = useRoute().params.productId as string;
+  const product = ref<Product>();
 
-const selectedColor = ref<string>();
-const selectedSize = ref<string>();
+  const selectedColor = ref<string>();
+  const selectedSize = ref<string>();
 
-function canOrderThisProduct() {
-  return selectedSize.value && selectedColor.value;
-}
-
-function orderThisProduct() {
-  if (!canOrderThisProduct()) {
-    return false;
+  function canOrderThisProduct() {
+    return selectedSize.value && selectedColor.value;
   }
 
-  return useOrderStore().addOrderItem({ productId, size: selectedSize.value!, color: selectedColor.value!, amount: 1 });
-}
+  function orderThisProduct() {
+    if (!canOrderThisProduct()) {
+      return false;
+    }
 
-onMounted(async () => {
-  product.value = await fetch(`http://localhost:3000/product/${productId}`)
-    .then(response => response.ok ? response.json() : null)
-    .catch(() => null);
-});
+    return useOrderStore().addOrderItem({
+      productId,
+      size: selectedSize.value!,
+      color: selectedColor.value!,
+      amount: 1
+    });
+  }
+
+  onMounted(async () => {
+    product.value = await fetch(`http://localhost:3000/product/${productId}`)
+      .then(response => response.ok ? response.json() : null)
+      .catch(() => null);
+  });
 </script>
 
 <template>
