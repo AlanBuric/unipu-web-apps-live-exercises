@@ -13,7 +13,7 @@ export default function processValidation(
     return next();
   }
 
-  const errors = results.array();
+  const errors = results.array().map(error => error.msg);
 
   response.status(StatusCodes.BAD_REQUEST).send({ error: errors[0], errors });
 }

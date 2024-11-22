@@ -9,8 +9,11 @@ import type { EmployeeQueryParams, WithUUID } from "../../types/data-transfer-ob
 
 function buildEmployeeBodyStringValidator(field: string) {
   return body(field)
+    .exists({ values: "falsy" })
+    .withMessage(`Employee ${field} not provided`)
     .isString()
     .withMessage(`Employee ${field} needs to be a string`)
+    .bail()
     .trim()
     .isLength({ min: 1 })
     .withMessage(`Employee ${field} needs to be at least 1 character long`);
@@ -22,7 +25,9 @@ const EmployeeController = Router()
     buildEmployeeBodyStringValidator("name"),
     buildEmployeeBodyStringValidator("surname"),
     buildEmployeeBodyStringValidator("position"),
-    body("yearsOfExperience")
+    body("experience")
+      .exists({ values: "falsy" })
+      .withMessage("Employee experience not provided")
       .isInt({ min: 0 })
       .withMessage("Employee years of experience need to be an integer, at least 0"),
     processValidation,
@@ -50,11 +55,13 @@ const EmployeeController = Router()
     query("experienceMin")
       .optional()
       .isInt({ min: 0 })
-      .withMessage("experienceMin must be an integer greater than or equal to 0"),
+      .withMessage("experienceMin must be an integer, at least 0")
+      .toInt(),
     query("experienceMax")
       .optional()
       .isInt({ min: 0 })
-      .withMessage("experienceMax must be an integer greater than or equal to 0"),
+      .withMessage("experienceMax must be an integer, at least 0")
+      .toInt(),
     processValidation,
     (request: Request<any, any, any, EmployeeQueryParams>, response: Response<(Employee & WithUUID)[]>): any => {
       const queryParams = matchedData<EmployeeQueryParams>(request);
@@ -64,7 +71,7 @@ const EmployeeController = Router()
       const filterFunctions: ((employee: Employee) => boolean)[] = [];
 
       if (queryParams.position) {
-        filterFunctions.push(employee => employee.position.toLowerCase().includes(queryParams.position! ));
+        filterFunctions.push(employee => employee.position.toLowerCase().includes(queryParams.position!));
       }
 
       if (queryParams.experienceMin != null) {
