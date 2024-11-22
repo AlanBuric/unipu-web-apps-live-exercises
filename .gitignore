@@ -134,4 +134,4 @@ dist
 
 # Custom database setup
 database
-!src/**/database
+!**/src/**/database

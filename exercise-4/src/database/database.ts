@@ -2,6 +2,10 @@ import type { Employee } from "../types/database-types.js";
 import { Low } from "lowdb";
 import { JSONFilePreset } from "lowdb/node";
 import type { UUID } from "crypto";
+import fileSystem from "fs";
+import path from "path";
+
+const DATABASE_FILE_LOCATION = "./database/database.json";
 
 type DatabaseSchema = {
   employees: Record<UUID, Employee>
@@ -20,7 +24,14 @@ export async function connectDatabase() {
     throw new Error("Database already connected");
   }
 
-  database = await JSONFilePreset("../database/database.json", getDefaultData());
+  await fileSystem.promises.access(DATABASE_FILE_LOCATION).catch(async () => {
+    const directory = path.dirname(DATABASE_FILE_LOCATION);
+
+    await fileSystem.promises.mkdir(directory, { recursive: true });
+    await fileSystem.promises.writeFile(DATABASE_FILE_LOCATION, JSON.stringify(getDefaultData()));
+  });
+
+  database = await JSONFilePreset(DATABASE_FILE_LOCATION, getDefaultData());
 }
 
 export function getDatabase(): Low<DatabaseSchema> {
