@@ -131,3 +131,7 @@ dist
 
 # JetBrains
 .idea
+
+# Custom database setup
+database
+!src/**/database
