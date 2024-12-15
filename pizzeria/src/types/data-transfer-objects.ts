@@ -1,20 +1,18 @@
-import {PizzaOrder, PizzaSize} from "./types.js";
-import {UUID} from "crypto";
+import { PizzaSize } from "./database-types.js";
 
 export type PizzaOrderEntry = {
-    id: string;
-    velicina: PizzaSize;
-    kolicina: number;
+  size: PizzaSize;
+  count: number;
 };
 
 export type UserPizzaOrder = {
-    narudzba: PizzaOrderEntry[];
-    prezime: string;
-    adresa: string;
-    broj_telefona: string;
+  order: Record<string, PizzaOrderEntry>;
+  surname: string;
+  address: string;
+  telephoneNumber: string;
 };
 
-export type PizzaOrderResponse = PizzaOrder & {
-    id: UUID,
-    message: string;
+export type PizzaOrderResponse = {
+  id: string;
+  totalPrice: number;
 };

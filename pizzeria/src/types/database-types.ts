@@ -1,14 +1,16 @@
 import { UserPizzaOrder } from "./data-transfer-objects.js";
 
 export type Pizza = {
-  naziv: string;
-  cijena: number;
+  name: string;
+  price: number;
+  imageUrl: string;
+  ingredients: string[];
 };
 
-export const PIZZA_SIZES = ["mala", "srednja", "jumbo"] as const;
+export const PIZZA_SIZES = ["small", "medium", "jumbo"] as const;
 
 export type PizzaSize = (typeof PIZZA_SIZES)[number];
 
 export type PizzaOrder = UserPizzaOrder & {
-  ukupna_cijena: number;
+  totalPrice: number;
 };

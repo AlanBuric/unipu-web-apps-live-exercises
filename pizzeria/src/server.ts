@@ -1,7 +1,12 @@
-import application from "./application.js";
+import { config } from "dotenv";
+import { connectToDatabase } from "./database/main.js";
+import createApplication from "./application.js";
 
-const port = 3000;
+config();
 
-application.listen(port, () =>
+await connectToDatabase();
+const port = process.env.PORT ?? 3000;
+
+createApplication().listen(port, () =>
   console.log(`Express server is up and running on http://localhost:${port}`)
 );
