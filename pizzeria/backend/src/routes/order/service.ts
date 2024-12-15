@@ -7,7 +7,7 @@ import { ObjectId } from "mongodb";
 
 export default class OrderService {
   static async addOrder(userOrder: UserPizzaOrder): Promise<PizzaOrderResponse> {
-    const pizzaIds = Object.keys(userOrder.order).map(id => new ObjectId(id));
+    const pizzaIds = [...new Set(userOrder.order.map(entry => entry.id))].map(id => new ObjectId(id));
     const pizzas = await getDatabase().collection<Pizza>("pizzas").find({ _id: { $in: pizzaIds } }).project({
       _id: 1,
       price: 1
@@ -21,10 +21,16 @@ export default class OrderService {
       throw new RequestError(StatusCodes.NOT_FOUND, `Pizzas with the following IDs couldn't be found: ${missingIds}`);
     }
 
-    const totalPrice = pizzas.reduce(
-      (total, pizza) => total + userOrder.order[pizza._id.toString()].count * pizza.price,
-      0
-    );
+    const totalPrice = userOrder.order.reduce(
+      (total, entry) => {
+        const pizza = pizzas.find(pizza => (pizza._id as ObjectId).toString() == entry.id);
+
+        if (!pizza) {
+          throw new RequestError(StatusCodes.NOT_FOUND, `Pizza with ID ${entry.id} not found`);
+        }
+
+        return total + entry.count * pizza.price;
+      }, 0);
 
     const newOrder: PizzaOrder = {
       ...userOrder,
