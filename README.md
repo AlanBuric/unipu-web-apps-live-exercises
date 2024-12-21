@@ -1,7 +1,8 @@
 # unipu-web-apps-live-exercises
 
-These are the Node.js Express HTTP REST API live exercises and homework solutions from the Web Applications course at
-the Juraj Dobrila University in Pula.
+This repository contains directories, each with their own backend and frontend or only backend Node.js Express HTTP 
+REST API written for the live exercises or homework solutions for the Web Applications course at the Juraj Dobrila 
+University in Pula.
 
 ## Technologies in use
 
