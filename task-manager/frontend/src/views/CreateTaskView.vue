@@ -1,22 +1,22 @@
-<script setup>
-import { ref } from "vue";
+<script setup lang="ts">
+  import { ref } from "vue";
 
-const naslovZadatka = ref("");
-const opisZadatka = ref("");
-const editing = ref(false);
-const tasks = ref([]);
+  const naslovZadatka = ref("");
+  const opisZadatka = ref("");
+  const editing = ref(false);
+  const tasks = ref([]);
 
-function dodajZadatak() {
-  if (naslovZadatka.value.trim() && opisZadatka.value.trim()) {
-    tasks.value.unshift({
-      naslov: naslovZadatka.value,
-      opis: opisZadatka.value,
-    });
-    naslovZadatka.value = "";
-    opisZadatka.value = "";
-    editing.value = false;
+  function dodajZadatak() {
+    if (naslovZadatka.value.trim() && opisZadatka.value.trim()) {
+      tasks.value.unshift({
+        naslov: naslovZadatka.value,
+        opis: opisZadatka.value,
+      });
+      naslovZadatka.value = "";
+      opisZadatka.value = "";
+      editing.value = false;
+    }
   }
-}
 </script>
 
 <template>
@@ -37,7 +37,7 @@ function dodajZadatak() {
     <div v-if="editing" class="bg-white p-4 shadow rounded-md mb-6">
       <div class="mb-4">
         <label class="block text-gray-700 font-medium mb-2" for="naslov"
-          >Naslov zadatka:</label
+        >Naslov zadatka:</label
         >
         <input
           id="naslov"
@@ -48,7 +48,7 @@ function dodajZadatak() {
       </div>
       <div class="mb-4">
         <label class="block text-gray-700 font-medium mb-2" for="opis"
-          >Opis zadatka:</label
+        >Opis zadatka:</label
         >
         <textarea
           id="opis"
