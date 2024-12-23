@@ -10,11 +10,6 @@ const router = createRouter({
       component: TasksView
     },
     {
-      path: "/create",
-      name: "create",
-      component: () => import("@/views/CreateTaskView.vue")
-    },
-    {
       path: "/:pathMatch(.*)*",
       redirect: "/tasks"
     }
