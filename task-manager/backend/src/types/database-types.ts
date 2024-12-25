@@ -1,3 +1,7 @@
+export type WithId<T> = T & {
+  _id: string;
+}
+
 export type Task = {
   name: string;
   description: string;

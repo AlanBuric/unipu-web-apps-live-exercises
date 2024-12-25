@@ -13,10 +13,14 @@ export async function connectToDatabase(): Promise<Db> {
   }
 
   try {
+    console.log("Connecting to MongoDB...");
+    const startTime = Date.now();
+
     const client = new MongoClient(mongoUri);
     await client.connect();
 
-    console.log("Successfully connected to MongoDB.");
+    const latency = ((Date.now() - startTime) / 1000).toFixed(2);
+    console.log(`Successfully connected to MongoDB in ${latency}s.`);
 
     return database = client.db(databaseName);
   } catch (error) {

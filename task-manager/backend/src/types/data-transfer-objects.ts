@@ -1,7 +1,8 @@
-import { Tag, Task } from "./database-types.js";
-import { WithId } from "mongodb";
+import { Tag, Task, WithId } from "./database-types.js";
 
 export type TasksResponse = {
-  tasks: WithId<Task>[];
-  tags: WithId<Tag>[];
-}
+  tasks: WithId<Task>[],
+  tags: TagsResponse
+};
+
+export type TagsResponse = WithId<Tag>[];
