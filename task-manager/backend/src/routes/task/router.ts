@@ -47,8 +47,15 @@ const TaskRouter = Router()
       .withMessage(`tagIds is a required array with an element count between ${TAG_IDS_ARRAY_MIN_MAX_OPTIONS.min} and ${TAG_IDS_ARRAY_MIN_MAX_OPTIONS.max} inclusive`),
     body("tagIds.*")
       .optional()
-      .custom((array: string[]) => array.every(id => ObjectId.isValid(id)))
-      .withMessage("One of the tag IDs has an invalid format"),
+      .custom((array: string[]) => {
+        const invalid = array.find(id => ObjectId.isValid(id));
+
+        if (invalid) {
+          throw new Error(`Tag ID ${invalid} is of invalid format`);
+        }
+
+        return true;
+      }),
     handleValidationResult,
     async (request: Request, response: Response): Promise<any> => {
       const task = matchedData<Task>(request);

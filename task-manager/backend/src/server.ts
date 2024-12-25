@@ -4,6 +4,7 @@ import cors from "cors";
 import handleServerErrors from "./util/error-handler.js";
 import TaskRouter from "./routes/task/router.js";
 import { connectToDatabase } from "./database/driver.js";
+import TagRouter from "./routes/tags/router.js";
 
 config();
 
@@ -15,6 +16,7 @@ const app = express().use(
   cors(),
   json(),
   Router().use("/tasks", TaskRouter),
+  Router().use("/tags", TagRouter),
   handleServerErrors);
 
 app.listen(port, () => {
