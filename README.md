@@ -4,6 +4,8 @@ This repository contains directories, each with their own backend and frontend o
 REST API written for the live exercises or homework solutions for the Web Applications course at the Juraj Dobrila 
 University in Pula.
 
+**Professor's course:** https://github.com/lukablaskovic/FIPU-WA
+
 ## Technologies in use
 
 The actual used technologies are just Express and Nodemon, though I choose to use many more, such as TypeScript, Vitest,
