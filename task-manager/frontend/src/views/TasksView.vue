@@ -1,9 +1,10 @@
 <script setup lang="ts">
-  import { reactive, ref } from "vue";
+  import { computed, reactive, ref } from "vue";
   import TaskComponent from "@/components/TaskComponent.vue";
   import EditingTaskComponent from "@/components/EditingTaskComponent.vue";
   import type { Tag, Task, WithId } from "@shared-types/database-types.ts";
   import type { TasksResponse } from "@shared-types/data-transfer-objects.ts";
+  import { getAuthHeaders } from "@/utils";
 
   const NEW_TASK_ID = "new";
 
@@ -11,20 +12,20 @@
   const tags = reactive<Record<string, TasksResponse["tags"][number]>>({});
 
   const editing = ref({ _id: "", isNew: false });
-  const hasTasks = ref(false);
+  const hasTasks = computed(() => Object.keys(tasks).length > 0);
 
-  fetch("http://localhost:3000/api/tasks")
-    .then(response => response.json())
+  fetch("http://localhost:3000/api/tasks", { headers: getAuthHeaders() })
+    .then((response) => response.json())
     .then((body: TasksResponse) => {
-      body.tasks.forEach(task => tasks[task._id] = task);
-      body.tags.forEach(tag => tags[tag._id] = tag);
-
-      hasTasks.value = body.tasks.length > 0;
+      body.tasks.forEach((task) => (tasks[task._id] = task));
+      body.tags.forEach((tag) => (tags[tag._id] = tag));
     });
 
   function startEditingTask(_id: string) {
     if (tasks[editing.value._id]) {
-      const stopEditing = confirm("Jeste li sigurni da želite odbaciti trenutne nespremljene promjene?");
+      const stopEditing = confirm(
+        "Jeste li sigurni da želite odbaciti trenutno nespremljene promjene?",
+      );
 
       if (!stopEditing) {
         return;
@@ -52,13 +53,13 @@
     fetch(`http://localhost:3000/api/tasks/${task._id}`, {
       method: "PATCH",
       body: JSON.stringify(task),
-      headers: { "Content-Type": "application/json" }
+      headers: { "Content-Type": "application/json", ...getAuthHeaders() },
     }).then((response) => {
       if (response.ok) {
         tasks[editing.value._id] = task;
         resetEditing();
       } else {
-        response.json().then(body => alert(`Couldn't save the task. ${body?.error}`));
+        response.json().then((body) => alert(`Couldn't save the task. ${body?.error}`));
       }
     });
   }
@@ -67,8 +68,9 @@
     fetch(`http://localhost:3000/api/tasks`, {
       method: "POST",
       body: JSON.stringify(task),
-      headers: { "Content-Type": "application/json" }
-    }).then((response) => Promise.all([response.ok, response.json()]))
+      headers: { "Content-Type": "application/json", ...getAuthHeaders() },
+    })
+      .then((response) => Promise.all([response.ok, response.json()]))
       .then(([isOk, body]) => {
         if (isOk) {
           resetEditing();
@@ -92,7 +94,7 @@
       name: "",
       description: "",
       done: false,
-      tagIds: []
+      tagIds: [],
     };
 
     editing.value = { _id: NEW_TASK_ID, isNew: true };
@@ -102,8 +104,9 @@
     fetch(`http://localhost:3000/api/tags`, {
       method: "POST",
       body: JSON.stringify(tag),
-      headers: { "Content-Type": "application/json" }
-    }).then((response) => Promise.all([response.ok, response.json()]))
+      headers: { "Content-Type": "application/json", ...getAuthHeaders() },
+    })
+      .then((response) => Promise.all([response.ok, response.json()]))
       .then(([isOk, body]) => {
         if (isOk) {
           tags[body] = { _id: body, ...tag };
@@ -117,12 +120,13 @@
     const task = tasks[_id];
 
     fetch(`http://localhost:3000/api/tasks/${task._id}`, {
-      method: "DELETE"
+      method: "DELETE",
+      headers: getAuthHeaders(),
     }).then((response) => {
       if (response.ok) {
         delete tasks[_id];
       } else {
-        response.json().then(body => alert(`Couldn't delete the task. ${body?.error}`));
+        response.json().then((body) => alert(`Couldn't delete the task. ${body?.error}`));
       }
     });
   }
@@ -133,12 +137,12 @@
     fetch(`http://localhost:3000/api/tasks/${task._id}`, {
       method: "PATCH",
       body: JSON.stringify({ done: true }),
-      headers: { "Content-Type": "application/json" }
+      headers: { "Content-Type": "application/json", ...getAuthHeaders() },
     }).then((response) => {
       if (response.ok) {
         tasks[_id].done = true;
       } else {
-        response.json().then(body => alert(`Couldn't finish the task. ${body?.error}`));
+        response.json().then((body) => alert(`Couldn't finish the task. ${body?.error}`));
       }
     });
   }

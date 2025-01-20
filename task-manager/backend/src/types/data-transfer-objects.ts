@@ -1,8 +1,13 @@
-import { Tag, Task, WithId } from "./database-types.js";
+import { Tag, Task, WithId } from './database-types.js';
 
 export type TasksResponse = {
-  tasks: WithId<Task>[],
-  tags: TagsResponse
+  tasks: WithId<Task>[];
+  tags: TagsResponse;
 };
 
 export type TagsResponse = WithId<Tag>[];
+
+export type UserCredentialsRequest = {
+  username: string;
+  password: string;
+};

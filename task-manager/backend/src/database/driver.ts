@@ -1,4 +1,5 @@
-import { Db, MongoClient } from "mongodb";
+import { Db, MongoClient } from 'mongodb';
+import getLoggingPrefix from '../util/logging.js';
 
 let database: undefined | Db;
 
@@ -7,31 +8,31 @@ export async function connectToDatabase(): Promise<Db> {
   const databaseName = process.env.MONGO_DATABASE_NAME;
 
   if (!mongoUri) {
-    throw new Error("MongoDB URI is missing");
+    throw new Error('MongoDB URI is missing');
   } else if (!databaseName) {
-    throw new Error("MongoDB name is missing");
+    throw new Error('MongoDB name is missing');
   }
 
   try {
-    console.log("Connecting to MongoDB...");
+    console.log(`${getLoggingPrefix()} Connecting to MongoDB...`);
     const startTime = Date.now();
 
     const client = new MongoClient(mongoUri);
     await client.connect();
 
     const latency = ((Date.now() - startTime) / 1000).toFixed(2);
-    console.log(`Successfully connected to MongoDB in ${latency}s.`);
+    console.log(`${getLoggingPrefix()} Successfully connected to MongoDB in ${latency}s.`);
 
-    return database = client.db(databaseName);
+    return (database = client.db(databaseName));
   } catch (error) {
-    console.error("An error occurred while trying to connect to the database", error);
+    console.error(`An error occurred while trying to connect to the database`, error);
     throw error;
   }
 }
 
 export default function getDatabase(): Db {
   if (!database) {
-    throw new Error("MongoDB database was invoked while uninitialized");
+    throw new Error('MongoDB database was invoked while uninitialized');
   }
 
   return database;
