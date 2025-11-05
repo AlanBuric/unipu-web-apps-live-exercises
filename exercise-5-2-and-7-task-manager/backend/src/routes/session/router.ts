@@ -3,8 +3,7 @@ import { body, matchedData } from 'express-validator';
 import argon2 from 'argon2';
 import jwt from 'jsonwebtoken';
 import { ObjectId } from 'mongodb';
-// @ts-expect-error blame the creators
-import ms from 'ms';
+import ms, { StringValue } from 'ms';
 import getDatabase from '../../database/driver.js';
 import handleValidationResult from '../../middleware/validation.js';
 import RequestError from '../../util/RequestError.js';
@@ -20,7 +19,7 @@ const SessionRouter = () => {
     throw new Error('JWT_ACCESS_TOKEN_TIME is not defined in the environment variables');
   }
 
-  const accessTokenTime = ms(JWT_ACCESS_TOKEN_TIME) / 1000;
+  const accessTokenTime = ms(JWT_ACCESS_TOKEN_TIME as StringValue) / 1000;
 
   return Router()
     .post(

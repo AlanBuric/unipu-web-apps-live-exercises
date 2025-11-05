@@ -10,9 +10,9 @@
   "author": "Alan Burić",
   "license": "MIT",
   "dependencies": {
-    "express": "^4.21.1"
+    "express": "^5.1.0"
   },
   "devDependencies": {
-    "nodemon": "^3.1.7"
+    "nodemon": "^3.1.10"
   }
 }
