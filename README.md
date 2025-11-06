@@ -1,7 +1,7 @@
 # unipu-web-apps-live-exercises
 
 This repository contains directories, each with their own backend and sometimes frontend. The backends are a Node.js
-Express HTTP REST API written during class exercises or for homework solutions for the winter 2025 Web Applications
+Express HTTP REST API written during class exercises or for homework solutions for the winter 2024 Web Applications
 course at the Juraj Dobrila University in Pula's Faculty of Informatics.
 
 **Professor's course:** https://github.com/lukablaskovic/FIPU-WA
