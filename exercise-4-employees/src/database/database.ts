@@ -8,14 +8,14 @@ import path from "path";
 const DATABASE_FILE_LOCATION = "./database/database.json";
 
 type DatabaseSchema = {
-  employees: Record<UUID, Employee>
+  employees: Record<UUID, Employee>;
 };
 
 let database: Low<DatabaseSchema> | undefined = undefined;
 
 function getDefaultData(): DatabaseSchema {
   return {
-    employees: {}
+    employees: {},
   };
 }
 
@@ -28,7 +28,10 @@ export async function connectDatabase() {
     const directory = path.dirname(DATABASE_FILE_LOCATION);
 
     await fileSystem.promises.mkdir(directory, { recursive: true });
-    await fileSystem.promises.writeFile(DATABASE_FILE_LOCATION, JSON.stringify(getDefaultData()));
+    await fileSystem.promises.writeFile(
+      DATABASE_FILE_LOCATION,
+      JSON.stringify(getDefaultData())
+    );
   });
 
   database = await JSONFilePreset(DATABASE_FILE_LOCATION, getDefaultData());

@@ -5,7 +5,7 @@ import handleServerError from "./routes/middleware/error-handler.js";
 
 const application = express()
   .use(cors(), express.json())
-  .use("/employee", EmployeeController)
+  .use("/employees", EmployeeController)
   .use(handleServerError);
 
 export default application;
